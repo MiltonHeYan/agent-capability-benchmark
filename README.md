@@ -74,7 +74,7 @@ verifiers/                   Independent outcome verification contracts
 
 An agent saying that an action succeeded is never sufficient evidence. A successful run requires an independent verifier to observe the expected state.
 
-See [the v0.1 specification](docs/benchmark-v0.1.md), [benchmark principles](docs/principles.md), and [contribution guide](CONTRIBUTING.md).
+See [the v0.1 specification](docs/benchmark-v0.1.md), [public task catalog](docs/task-catalog-v0.1.md), [benchmark principles](docs/principles.md), and [contribution guide](CONTRIBUTING.md).
 
 ## Project policy
 

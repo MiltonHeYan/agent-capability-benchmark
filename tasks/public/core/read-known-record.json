@@ -1,0 +1,67 @@
+{
+  "id": "read-known-record",
+  "version": "0.1.0",
+  "title": "Read a known record by reference",
+  "track": "core",
+  "description": "Read an exact record when the capability and stable record reference are already known.",
+  "request": "Read record rec-planning-0042 from my connected workspace. Return its exact title and body. Do not modify anything.",
+  "capabilities_required": [
+    "connected-account-read",
+    "record-read"
+  ],
+  "fixture": {
+    "kind": "record-service",
+    "reset_ref": "fixture://core/read-known-record/reset",
+    "seed_ref": "fixture://core/read-known-record/seed",
+    "metadata": {
+      "account_alias": "primary-workspace",
+      "record_reference": "rec-planning-0042"
+    }
+  },
+  "policy": {
+    "approval": "not_required",
+    "prohibited_actions": [
+      "create-record",
+      "update-record",
+      "delete-record"
+    ],
+    "data_boundary": "Only record rec-planning-0042 in the primary-workspace fixture may be read."
+  },
+  "limits": {
+    "timeout_seconds": 90,
+    "max_tool_calls": 5,
+    "max_retries": 1,
+    "max_cost_usd": 0.05
+  },
+  "expected_outcome": {
+    "primary_verdict": "verified_success",
+    "reason_code": "known-record-read"
+  },
+  "verifier": {
+    "kind": "independent-record-read",
+    "ref": "verifier://core/read-known-record",
+    "success_condition": "The exact seeded title and body are reported and the fixture remains unchanged.",
+    "checks": [
+      {
+        "subject": "agent.output.record-title",
+        "operator": "equals",
+        "expected_ref": "fixture://core/read-known-record/title"
+      },
+      {
+        "subject": "agent.output.record-body",
+        "operator": "equals",
+        "expected_ref": "fixture://core/read-known-record/body"
+      },
+      {
+        "subject": "fixture.mutation-count",
+        "operator": "equals",
+        "expected": 0
+      }
+    ]
+  },
+  "tags": [
+    "direct-execution",
+    "read-only",
+    "connected-account"
+  ]
+}

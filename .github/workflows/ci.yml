@@ -64,6 +64,7 @@ jobs:
               names = set(archive.namelist())
           required = {
               "agent_capability_benchmark/spec/task.schema.json",
+              "agent_capability_benchmark/tasks/public/MANIFEST.json",
           }
           missing = sorted(required - names)
           if missing:

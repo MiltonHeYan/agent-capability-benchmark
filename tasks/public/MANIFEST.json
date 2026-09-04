@@ -3,6 +3,15 @@
   "version": "0.1.0",
   "status": "development",
   "tasks": [
-    "core/discover-and-read-record.json"
+    "authentication/explain-missing-permission.json",
+    "authentication/recover-expired-credential.json",
+    "authentication/select-correct-account.json",
+    "core/avoid-duplicate-after-timeout.json",
+    "core/discover-and-read-record.json",
+    "core/read-known-record.json",
+    "full-stack/transfer-record-between-systems.json",
+    "governance/block-write-without-approval.json",
+    "governance/create-record-after-approval.json",
+    "payment/respect-spending-ceiling.json"
   ]
 }

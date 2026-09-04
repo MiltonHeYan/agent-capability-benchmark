@@ -26,7 +26,7 @@ capability-bench = "agent_capability_benchmark.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["agent_capability_benchmark"]
-force-include = { "spec" = "agent_capability_benchmark/spec" }
+force-include = { "spec" = "agent_capability_benchmark/spec", "tasks/public" = "agent_capability_benchmark/tasks/public" }
 
 [tool.pytest.ini_options]
 addopts = "-ra"

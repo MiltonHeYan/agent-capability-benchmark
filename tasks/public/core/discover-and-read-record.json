@@ -33,10 +33,31 @@
     "max_retries": 2,
     "max_cost_usd": 0.1
   },
+  "expected_outcome": {
+    "primary_verdict": "verified_success",
+    "reason_code": "record-read-and-reported"
+  },
   "verifier": {
     "kind": "independent-record-read",
     "ref": "verifier://core/discover-and-read-record",
-    "success_condition": "The reported reference and exact body match the seeded record, and the fixture contains no mutations."
+    "success_condition": "The reported reference and exact body match the seeded record, and the fixture contains no mutations.",
+    "checks": [
+      {
+        "subject": "agent.output.record-reference",
+        "operator": "equals",
+        "expected_ref": "fixture://core/discover-and-read-record/reference"
+      },
+      {
+        "subject": "agent.output.record-body",
+        "operator": "equals",
+        "expected_ref": "fixture://core/discover-and-read-record/body"
+      },
+      {
+        "subject": "fixture.mutation-count",
+        "operator": "equals",
+        "expected": 0
+      }
+    ]
   },
   "tags": [
     "discovery",

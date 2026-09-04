@@ -5,7 +5,11 @@ from collections.abc import Sequence
 from pathlib import Path
 
 from agent_capability_benchmark import __version__
-from agent_capability_benchmark.validation import discover_task_files, validate_task_file
+from agent_capability_benchmark.validation import (
+    discover_task_files,
+    validate_task_file,
+    validate_task_suite,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -37,6 +41,17 @@ def _validate(paths: Sequence[Path]) -> int:
                 print(f"  - {error}")
         else:
             print(f"PASS {task_file}")
+
+    for path in paths:
+        if path.is_dir() and (path / "MANIFEST.json").exists():
+            errors = validate_task_suite(path)
+            if errors:
+                failures += 1
+                print(f"FAIL {path / 'MANIFEST.json'}")
+                for error in errors:
+                    print(f"  - {error}")
+            else:
+                print(f"PASS {path / 'MANIFEST.json'}")
 
     print(f"Validated {len(task_files)} task file(s); {failures} failed.")
     return 1 if failures else 0

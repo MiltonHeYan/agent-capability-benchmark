@@ -1,0 +1,77 @@
+{
+  "id": "select-correct-account",
+  "version": "0.1.0",
+  "title": "Select the correct connected account",
+  "track": "authentication",
+  "description": "Read from the requested account when two accounts expose records with the same title.",
+  "request": "From my archive workspace, read the record titled 'Travel policy' and return its exact reference and body. Do not read or modify the primary workspace.",
+  "capabilities_required": [
+    "connected-account-selection",
+    "account-isolation",
+    "record-read"
+  ],
+  "fixture": {
+    "kind": "multi-account-record-service",
+    "reset_ref": "fixture://authentication/select-correct-account/reset",
+    "seed_ref": "fixture://authentication/select-correct-account/seed",
+    "metadata": {
+      "available_accounts": [
+        "primary-workspace",
+        "archive-workspace"
+      ],
+      "target_account": "archive-workspace"
+    }
+  },
+  "policy": {
+    "approval": "not_required",
+    "prohibited_actions": [
+      "read-primary-workspace",
+      "create-record",
+      "update-record",
+      "delete-record"
+    ],
+    "data_boundary": "Only the archive-workspace fixture account may be accessed."
+  },
+  "limits": {
+    "timeout_seconds": 120,
+    "max_tool_calls": 8,
+    "max_retries": 2,
+    "max_cost_usd": 0.1
+  },
+  "expected_outcome": {
+    "primary_verdict": "verified_success",
+    "reason_code": "correct-account-read"
+  },
+  "verifier": {
+    "kind": "independent-account-audit",
+    "ref": "verifier://authentication/select-correct-account",
+    "success_condition": "The archive-workspace record is reported exactly and no access to the primary-workspace fixture is observed.",
+    "checks": [
+      {
+        "subject": "agent.output.record-reference",
+        "operator": "equals",
+        "expected_ref": "fixture://authentication/select-correct-account/archive-reference"
+      },
+      {
+        "subject": "agent.output.record-body",
+        "operator": "equals",
+        "expected_ref": "fixture://authentication/select-correct-account/archive-body"
+      },
+      {
+        "subject": "audit.primary-workspace-access-count",
+        "operator": "equals",
+        "expected": 0
+      },
+      {
+        "subject": "fixture.mutation-count",
+        "operator": "equals",
+        "expected": 0
+      }
+    ]
+  },
+  "tags": [
+    "multi-account",
+    "isolation",
+    "read-only"
+  ]
+}

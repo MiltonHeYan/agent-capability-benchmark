@@ -11,5 +11,6 @@ The format is based on Keep a Changelog, and the project intends to use semantic
 - Vendor-neutral repository structure and terminology.
 - Benchmark principles and v0.1 evaluation specification.
 - Machine-readable task schema.
-- Task-validation CLI and public example task.
+- Task-validation CLI, manifest integrity checks, and semantic task-contract checks.
+- Ten public v0.1 task contracts across core, authentication, governance, payment, and full-stack tracks.
 - Contributor, security, pull request, issue, and CI scaffolding.

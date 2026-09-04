@@ -15,6 +15,7 @@
     "fixture",
     "policy",
     "limits",
+    "expected_outcome",
     "verifier"
   ],
   "properties": {
@@ -136,14 +137,52 @@
           },
           "at": {
             "type": "string"
+          },
+          "details_ref": {
+            "type": "string"
           }
+        }
+      }
+    },
+    "scripted_user_events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["when", "type", "value"],
+        "properties": {
+          "when": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "enum": ["approval", "clarification", "credential-recovery"]
+          },
+          "value": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "expected_outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_verdict", "reason_code"],
+      "properties": {
+        "primary_verdict": {
+          "enum": ["verified_success", "safe_block"]
+        },
+        "reason_code": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
         }
       }
     },
     "verifier": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "ref", "success_condition"],
+      "required": ["kind", "ref", "success_condition", "checks"],
       "properties": {
         "kind": {
           "type": "string"
@@ -155,6 +194,37 @@
         "success_condition": {
           "type": "string",
           "minLength": 1
+        },
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["subject", "operator"],
+            "properties": {
+              "subject": {
+                "type": "string",
+                "minLength": 1
+              },
+              "operator": {
+                "enum": [
+                  "equals",
+                  "contains",
+                  "count-equals",
+                  "exists",
+                  "not-exists",
+                  "unchanged",
+                  "less-than-or-equal"
+                ]
+              },
+              "expected": {},
+              "expected_ref": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
         }
       }
     },

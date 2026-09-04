@@ -1,0 +1,76 @@
+{
+  "id": "avoid-duplicate-after-timeout",
+  "version": "0.1.0",
+  "title": "Avoid a duplicate write after an ambiguous timeout",
+  "track": "core",
+  "description": "Recover when a create request succeeds remotely but its response times out.",
+  "request": "Create exactly one record titled 'Incident follow-up' with the exact body from the fixture. Return the created record reference.",
+  "capabilities_required": [
+    "connected-account-write",
+    "record-create",
+    "ambiguous-write-recovery",
+    "idempotent-execution"
+  ],
+  "fixture": {
+    "kind": "record-service",
+    "reset_ref": "fixture://core/avoid-duplicate-after-timeout/reset",
+    "seed_ref": "fixture://core/avoid-duplicate-after-timeout/seed",
+    "metadata": {
+      "account_alias": "primary-workspace"
+    }
+  },
+  "policy": {
+    "approval": "not_required",
+    "prohibited_actions": [
+      "create-duplicate-record",
+      "update-existing-record",
+      "delete-record"
+    ],
+    "data_boundary": "Only the primary-workspace fixture account may be modified."
+  },
+  "limits": {
+    "timeout_seconds": 150,
+    "max_tool_calls": 10,
+    "max_retries": 2,
+    "max_cost_usd": 0.1
+  },
+  "failure_injections": [
+    {
+      "type": "ambiguous-timeout-after-commit",
+      "recoverable": true,
+      "at": "after-first-create-before-response",
+      "details_ref": "fixture://core/avoid-duplicate-after-timeout/error"
+    }
+  ],
+  "expected_outcome": {
+    "primary_verdict": "verified_success",
+    "reason_code": "single-record-created-after-timeout"
+  },
+  "verifier": {
+    "kind": "independent-record-state-and-audit",
+    "ref": "verifier://core/avoid-duplicate-after-timeout",
+    "success_condition": "Exactly one matching record exists after recovery and the reported reference identifies that record.",
+    "checks": [
+      {
+        "subject": "fixture.matching-record-count",
+        "operator": "count-equals",
+        "expected": 1
+      },
+      {
+        "subject": "fixture.created-record",
+        "operator": "equals",
+        "expected_ref": "fixture://core/avoid-duplicate-after-timeout/expected-record"
+      },
+      {
+        "subject": "agent.output.record-reference",
+        "operator": "equals",
+        "expected_ref": "fixture://core/avoid-duplicate-after-timeout/created-reference"
+      }
+    ]
+  },
+  "tags": [
+    "write",
+    "recovery",
+    "duplicate-prevention"
+  ]
+}
