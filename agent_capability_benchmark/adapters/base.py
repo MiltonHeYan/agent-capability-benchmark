@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, ClassVar
 
 
@@ -10,14 +11,18 @@ class AdapterContext:
     task: dict[str, Any]
     run_id: str
     fixture_base_url: str
+    workspace: Path | None = None
+    namespace: str = ""
+    execution_connections: dict[str, str] = field(default_factory=dict)
+    allowed_egress: tuple[str, ...] = ()
     adapter_state: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
 class AdapterRunResult:
-    evidence: dict[str, Any]
     completed_normally: bool = True
     error: str | None = None
+    events: tuple[dict[str, Any], ...] = ()
     metadata: dict[str, Any] = field(default_factory=dict)
 
 
@@ -53,7 +58,7 @@ class CapabilityProviderAdapter(ABC):
 
     @abstractmethod
     async def run(self, context: AdapterContext) -> AdapterRunResult:
-        """Execute the task and return normalized evidence."""
+        """Execute the task without observing or constructing verifier evidence."""
 
     @abstractmethod
     async def teardown(self, context: AdapterContext) -> None:

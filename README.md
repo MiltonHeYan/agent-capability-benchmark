@@ -6,7 +6,7 @@ The benchmark keeps the model, agent runtime, task prompt, fixtures, and evaluat
 
 ## Status
 
-Pre-alpha. The repository defines the benchmark principles, v0.1 evaluation model, task schema, adapter boundary, and a small validation CLI. A reference runner will follow after the task contract is validated.
+Pre-alpha. The repository defines the benchmark principles, v0.1 evaluation model, task schema, adapter boundary, deterministic verifier, and isolated-run control-plane contract. Production service backends and official result publication are not yet implemented.
 
 ## Quick start
 
@@ -74,7 +74,7 @@ verifiers/                   Independent outcome verification contracts
 
 An agent saying that an action succeeded is never sufficient evidence. A successful run requires an independent verifier to observe the expected state.
 
-See [the v0.1 specification](docs/benchmark-v0.1.md), [public task catalog](docs/task-catalog-v0.1.md), [reference runtime](docs/reference-runtime.md), [benchmark principles](docs/principles.md), and [contribution guide](CONTRIBUTING.md).
+See [the v0.1 specification](docs/benchmark-v0.1.md), [public task catalog](docs/task-catalog-v0.1.md), [reference runtime](docs/reference-runtime.md), [sandbox and test-tenant model](docs/sandbox-and-tenancy.md), [benchmark principles](docs/principles.md), and [contribution guide](CONTRIBUTING.md).
 
 ## Project policy
 

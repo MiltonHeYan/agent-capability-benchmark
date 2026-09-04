@@ -14,11 +14,13 @@ Adapters may translate transport and event formats. They may not:
 - Inject task-specific tool hints
 - Bypass provider authentication, approval, or budget controls
 - Implement a missing provider capability inside the adapter
-- Construct verifier evidence that was not observed
+- Construct or access verifier evidence
+
+The adapter receives only opaque execution connection handles. The sandbox backend retains verifier and cleanup grants.
 
 ### Normalized evidence
 
-A run evidence document contains:
+A run evidence document is constructed by the trusted harness, not returned by the adapter. It contains:
 
 - `task_id` and unique `run_id`
 - Final normalized `observations`
@@ -53,6 +55,8 @@ capability-bench serve-fixtures --port 8765
 ```
 
 The observation update endpoint is for harness conformance testing. Real provider evaluations must collect state through independent verifier credentials and must not give the provider or agent access to verifier state.
+
+See [the sandbox and test-tenant model](sandbox-and-tenancy.md) for the production trust boundaries and run lifecycle.
 
 ## Verify an evidence document
 
