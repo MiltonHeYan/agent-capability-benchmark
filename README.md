@@ -116,6 +116,8 @@ Start with the [benchmark specification](docs/benchmark-v0.1.md), then use the [
 
 This repository is looking for maintainers interested in agent infrastructure, evaluation, authentication, sandboxes, developer tooling, and applied security.
 
+For a scoped first contribution, browse [`good first issue`](https://github.com/MiltonHeYan/agent-capability-benchmark/labels/good%20first%20issue) or [`help wanted`](https://github.com/MiltonHeYan/agent-capability-benchmark/labels/help%20wanted).
+
 Good ways to begin:
 
 - [Propose a vendor-neutral task](https://github.com/MiltonHeYan/agent-capability-benchmark/issues/new?template=task_proposal.yml)
