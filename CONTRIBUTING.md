@@ -24,6 +24,8 @@ make check
 
 Large architecture changes and scoring changes should begin with a design discussion. Small fixes can go directly to a pull request.
 
+Contributors interested in ongoing stewardship should also read [GOVERNANCE.md](GOVERNANCE.md). Maintainer access is earned through sustained contribution and sound review judgment, not employment or provider affiliation.
+
 ## Adding a task
 
 Public tasks live under `tasks/public/<track>/` and must validate against `spec/task.schema.json`.

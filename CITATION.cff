@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this benchmark in research or evaluation work, please cite it."
+title: "Agent Capability Benchmark"
+type: software
+authors:
+  - alias: MiltonHeYan
+repository-code: "https://github.com/MiltonHeYan/agent-capability-benchmark"
+url: "https://github.com/MiltonHeYan/agent-capability-benchmark"
+abstract: >-
+  A vendor-neutral, reproducible benchmark for infrastructure that supplies
+  external capabilities to AI agents, with fixed agent runners and independent
+  verification of external outcomes.
+license: MIT
+version: 0.1.0-dev
+date-released: 2026-09-04

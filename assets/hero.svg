@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Capability Benchmark</title>
+  <desc id="desc">Outcome-verified evaluation for agent capability infrastructure</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#080d1c"/>
+      <stop offset="0.55" stop-color="#111a36"/>
+      <stop offset="1" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#94a3b8" stroke-opacity="0.08"/>
+    </pattern>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="360" rx="24" fill="url(#bg)"/>
+  <rect width="1200" height="360" rx="24" fill="url(#grid)"/>
+  <circle cx="1035" cy="55" r="180" fill="#7c3aed" opacity="0.08"/>
+  <circle cx="1080" cy="320" r="230" fill="#0ea5e9" opacity="0.06"/>
+
+  <g transform="translate(88 82)">
+    <path d="M58 28H148M58 92H148M58 156H148" stroke="#64748b" stroke-width="3" stroke-dasharray="7 8"/>
+    <circle cx="38" cy="28" r="18" fill="#0f172a" stroke="#38bdf8" stroke-width="3"/>
+    <circle cx="38" cy="92" r="18" fill="#0f172a" stroke="#8b5cf6" stroke-width="3"/>
+    <circle cx="38" cy="156" r="18" fill="#0f172a" stroke="#22c55e" stroke-width="3"/>
+    <rect x="148" y="40" width="112" height="104" rx="22" fill="#0f172a" stroke="url(#accent)" stroke-width="4" filter="url(#glow)"/>
+    <path d="M179 92l22 22 34-43" fill="none" stroke="#22c55e" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g transform="translate(410 88)" fill="#f8fafc" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+    <text x="0" y="42" font-size="46" font-weight="760" letter-spacing="-1.2">Agent Capability Benchmark</text>
+    <text x="0" y="88" font-size="22" fill="#cbd5e1">Did the capability layer actually get the job done?</text>
+    <g transform="translate(0 132)" font-size="15" font-weight="650">
+      <rect width="166" height="38" rx="19" fill="#0ea5e9" fill-opacity="0.15" stroke="#38bdf8" stroke-opacity="0.45"/>
+      <text x="20" y="25" fill="#7dd3fc">OUTCOME VERIFIED</text>
+      <rect x="180" width="128" height="38" rx="19" fill="#8b5cf6" fill-opacity="0.15" stroke="#a78bfa" stroke-opacity="0.45"/>
+      <text x="202" y="25" fill="#c4b5fd">AGENT FIXED</text>
+      <rect x="322" width="148" height="38" rx="19" fill="#22c55e" fill-opacity="0.13" stroke="#4ade80" stroke-opacity="0.4"/>
+      <text x="344" y="25" fill="#86efac">VENDOR NEUTRAL</text>
+    </g>
+  </g>
+</svg>

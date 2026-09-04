@@ -1,0 +1,54 @@
+name: Integration proposal
+description: Propose an agent runner, provider adapter, verifier, or sandbox backend
+title: "integration: "
+labels:
+  - integration
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Integration type
+      options:
+        - Agent runner
+        - Capability provider adapter
+        - External-state verifier
+        - Sandbox or test-tenant backend
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Integration boundary
+      description: Explain what is translated, what remains under test, and which behavior stays in the fixed harness.
+    validations:
+      required: true
+  - type: textarea
+    id: credentials
+    attributes:
+      label: Credentials and test accounts
+      description: Describe execution, verification, cleanup, account isolation, and secret-redaction requirements.
+    validations:
+      required: true
+  - type: textarea
+    id: reproducibility
+    attributes:
+      label: Reproducibility
+      description: List the versions, digests, configuration, fixtures, and external dependencies that can be pinned.
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Conformance and verification plan
+      description: Explain how the integration can be tested without trusting its own success messages.
+    validations:
+      required: true
+  - type: checkboxes
+    id: neutrality
+    attributes:
+      label: Benchmark boundaries
+      options:
+        - label: This proposal does not rewrite task prompts or expose hidden verifier state.
+          required: true
+        - label: No production account or personal credential is required.
+          required: true
