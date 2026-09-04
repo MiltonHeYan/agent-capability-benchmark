@@ -1,0 +1,49 @@
+name: Task proposal
+description: Propose a new vendor-neutral benchmark task
+title: "task: "
+labels:
+  - task-proposal
+body:
+  - type: textarea
+    id: user_goal
+    attributes:
+      label: User goal
+      description: State the natural-language goal without naming a provider-specific solution.
+    validations:
+      required: true
+  - type: dropdown
+    id: track
+    attributes:
+      label: Track
+      options:
+        - Core
+        - Authentication
+        - Memory
+        - Payment
+        - Governance
+        - Identity
+        - Sandbox
+        - Full-stack
+    validations:
+      required: true
+  - type: textarea
+    id: verifier
+    attributes:
+      label: Independent verification
+      description: Explain how the final external state can be checked without trusting agent or provider output.
+    validations:
+      required: true
+  - type: textarea
+    id: failure_modes
+    attributes:
+      label: Expected failure modes
+      description: Include permissions, expired credentials, ambiguous writes, policy boundaries, or other relevant cases.
+    validations:
+      required: true
+  - type: checkboxes
+    id: neutrality
+    attributes:
+      label: Neutrality
+      options:
+        - label: The task does not depend on a provider-specific tool name or hidden adapter behavior.
+          required: true

@@ -1,0 +1,8 @@
+{
+  "suite_id": "public-core",
+  "version": "0.1.0",
+  "status": "development",
+  "tasks": [
+    "core/discover-and-read-record.json"
+  ]
+}

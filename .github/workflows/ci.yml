@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install project
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Lint and format check
+        run: |
+          python -m ruff check .
+          python -m ruff format --check .
+
+      - name: Run tests
+        run: python -m pytest -q
+
+      - name: Validate public task contracts
+        run: python -m agent_capability_benchmark validate tasks/public
+
+      - name: Build distributions
+        run: python -m build
+
+      - name: Verify wheel contents
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+
+          wheel = next(Path("dist").glob("*.whl"))
+          with zipfile.ZipFile(wheel) as archive:
+              names = set(archive.namelist())
+          required = {
+              "agent_capability_benchmark/spec/task.schema.json",
+          }
+          missing = sorted(required - names)
+          if missing:
+              raise SystemExit(f"wheel missing runtime files: {missing}")
+          PY

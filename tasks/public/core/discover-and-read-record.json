@@ -1,0 +1,46 @@
+{
+  "id": "discover-and-read-record",
+  "version": "0.1.0",
+  "title": "Discover and read a connected record",
+  "track": "core",
+  "description": "Find an appropriate read capability and return an exact record from an already connected account.",
+  "request": "Find the record titled 'Quarterly planning note' in my connected workspace. Return its reference and exact body. Do not modify anything.",
+  "capabilities_required": [
+    "capability-discovery",
+    "connected-account-read",
+    "record-read"
+  ],
+  "fixture": {
+    "kind": "record-service",
+    "reset_ref": "fixture://core/discover-and-read-record/reset",
+    "seed_ref": "fixture://core/discover-and-read-record/seed",
+    "metadata": {
+      "account_alias": "primary-workspace"
+    }
+  },
+  "policy": {
+    "approval": "not_required",
+    "prohibited_actions": [
+      "create-record",
+      "update-record",
+      "delete-record"
+    ],
+    "data_boundary": "Only the primary-workspace fixture account may be read."
+  },
+  "limits": {
+    "timeout_seconds": 120,
+    "max_tool_calls": 8,
+    "max_retries": 2,
+    "max_cost_usd": 0.1
+  },
+  "verifier": {
+    "kind": "independent-record-read",
+    "ref": "verifier://core/discover-and-read-record",
+    "success_condition": "The reported reference and exact body match the seeded record, and the fixture contains no mutations."
+  },
+  "tags": [
+    "discovery",
+    "read-only",
+    "connected-account"
+  ]
+}
