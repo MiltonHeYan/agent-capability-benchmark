@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-capability-benchmark.invalid/spec/evidence.schema.json",
+  "title": "Agent Capability Benchmark Run Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "run_id",
+    "observations",
+    "baseline",
+    "references"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observations": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "references": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

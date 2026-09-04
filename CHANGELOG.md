@@ -13,4 +13,5 @@ The format is based on Keep a Changelog, and the project intends to use semantic
 - Machine-readable task schema.
 - Task-validation CLI, manifest integrity checks, and semantic task-contract checks.
 - Ten public v0.1 task contracts across core, authentication, governance, payment, and full-stack tracks.
+- Provider adapter contract, normalized evidence schema, deterministic verifier engine, and loopback-only reference fixture session server.
 - Contributor, security, pull request, issue, and CI scaffolding.

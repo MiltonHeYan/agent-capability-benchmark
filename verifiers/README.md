@@ -11,3 +11,5 @@ A verifier must:
 - Avoid relying solely on agent output or provider success messages
 
 Verifier credentials and fixture secrets must never appear in public traces.
+
+The deterministic reference implementation lives in `agent_capability_benchmark/verifier.py`. It consumes normalized evidence validated against `spec/evidence.schema.json`; it does not call provider APIs or trust provider success messages.

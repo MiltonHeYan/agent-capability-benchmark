@@ -15,3 +15,5 @@ Each adapter will declare:
 Adapters may normalize transport and event formats. They must not rewrite task prompts, bypass provider safety controls, inject task-specific hints, or implement missing provider capabilities inside the adapter.
 
 Published comparisons must use reviewable adapter source and pin an exact commit.
+
+The executable adapter contract lives in `agent_capability_benchmark/adapters/base.py`. See `docs/reference-runtime.md` for lifecycle and evidence requirements.
