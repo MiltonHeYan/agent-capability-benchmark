@@ -6,7 +6,7 @@ The benchmark keeps the model, agent runtime, task prompt, fixtures, and evaluat
 
 ## Status
 
-Pre-alpha. The repository defines the benchmark principles, v0.1 evaluation model, task schema, adapter boundary, deterministic verifier, and isolated-run control-plane contract. Production service backends and official result publication are not yet implemented.
+Pre-alpha. The repository defines the benchmark principles, v0.1 evaluation model, task schema, separate provider-adapter and agent-runner boundaries, deterministic verifier, and isolated-run control-plane contract. Production service backends and official result publication are not yet implemented.
 
 ## Quick start
 
@@ -65,7 +65,7 @@ verifiers/                   Independent outcome verification contracts
 
 - **Provider**: the capability infrastructure under evaluation.
 - **Adapter**: the smallest integration needed to expose a provider to the runner.
-- **Runner**: the fixed agent host used to execute a task.
+- **Runner**: the fixed, fingerprinted agent host used to execute a task.
 - **Task**: a versioned goal, fixture, policy, and evaluation contract.
 - **Verifier**: an independent check of the final external state.
 - **Run**: one attempt by one provider configuration on one task version.
@@ -74,7 +74,7 @@ verifiers/                   Independent outcome verification contracts
 
 An agent saying that an action succeeded is never sufficient evidence. A successful run requires an independent verifier to observe the expected state.
 
-See [the v0.1 specification](docs/benchmark-v0.1.md), [public task catalog](docs/task-catalog-v0.1.md), [reference runtime](docs/reference-runtime.md), [sandbox and test-tenant model](docs/sandbox-and-tenancy.md), [benchmark principles](docs/principles.md), and [contribution guide](CONTRIBUTING.md).
+See [the v0.1 specification](docs/benchmark-v0.1.md), [public task catalog](docs/task-catalog-v0.1.md), [reference runtime](docs/reference-runtime.md), [agent runner protocol](docs/agent-runner-protocol.md), [sandbox and test-tenant model](docs/sandbox-and-tenancy.md), [benchmark principles](docs/principles.md), and [contribution guide](CONTRIBUTING.md).
 
 ## Project policy
 

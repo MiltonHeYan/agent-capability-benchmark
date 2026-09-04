@@ -1,11 +1,11 @@
 from agent_capability_benchmark.adapters.base import (
     AdapterContext,
-    AdapterRunResult,
+    CapabilityBundle,
     CapabilityProviderAdapter,
 )
 
 __all__ = [
     "AdapterContext",
-    "AdapterRunResult",
+    "CapabilityBundle",
     "CapabilityProviderAdapter",
 ]

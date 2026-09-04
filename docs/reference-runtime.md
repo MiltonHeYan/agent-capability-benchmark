@@ -6,7 +6,7 @@ The reference runtime exists to test benchmark plumbing. It is not a provider, d
 
 ### Adapter contract
 
-`CapabilityProviderAdapter` is the only provider-specific boundary. An adapter declares its supported capabilities and implements setup, execution, and teardown. The harness can mark unsupported tasks `not_eligible` before a run begins.
+`CapabilityProviderAdapter` is the only provider-specific boundary. An adapter declares its supported capabilities, establishes execution-side connections, returns a normalized `CapabilityBundle`, and tears those connections down. The harness can mark unsupported tasks `not_eligible` before a run begins.
 
 Adapters may translate transport and event formats. They may not:
 
@@ -17,6 +17,12 @@ Adapters may translate transport and event formats. They may not:
 - Construct or access verifier evidence
 
 The adapter receives only opaque execution connection handles. The sandbox backend retains verifier and cleanup grants.
+
+### Agent runner contract
+
+`AgentRunner` is the only engine-specific boundary. It consumes the task request and the adapter's capability bundle, then returns messages, events, metrics, and operational errors. It never constructs verifier evidence.
+
+Every runner declares a `RunnerFingerprint` containing the runner, engine, model, system-prompt digest, and inference configuration. Provider results with different fingerprints are not directly pooled.
 
 ### Normalized evidence
 
@@ -57,6 +63,7 @@ capability-bench serve-fixtures --port 8765
 The observation update endpoint is for harness conformance testing. Real provider evaluations must collect state through independent verifier credentials and must not give the provider or agent access to verifier state.
 
 See [the sandbox and test-tenant model](sandbox-and-tenancy.md) for the production trust boundaries and run lifecycle.
+See [the agent runner protocol](agent-runner-protocol.md) for engine integration and controlled comparisons.
 
 ## Verify an evidence document
 

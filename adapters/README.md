@@ -2,7 +2,7 @@
 
 An adapter exposes one capability provider to a benchmark runner without changing the task request or evaluation rules.
 
-The adapter receives only run-scoped, opaque execution connection handles. It must not receive verifier or cleanup credentials, baseline snapshots, hidden expected values, or evidence-store access. The trusted harness collects final state independently after the adapter returns, times out, or raises an error.
+The adapter receives only run-scoped, opaque execution connection handles. Its setup returns a normalized `CapabilityBundle` for the fixed agent runner. It must not execute the task, receive verifier or cleanup credentials, access baseline snapshots or hidden expected values, or access the evidence store. The trusted harness collects final state independently after the agent returns, times out, or raises an error.
 
 Each adapter will declare:
 

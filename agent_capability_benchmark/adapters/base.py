@@ -19,11 +19,23 @@ class AdapterContext:
 
 
 @dataclass(frozen=True)
-class AdapterRunResult:
-    completed_normally: bool = True
-    error: str | None = None
-    events: tuple[dict[str, Any], ...] = ()
-    metadata: dict[str, Any] = field(default_factory=dict)
+class CapabilityBundle:
+    """Provider capabilities projected into the fixed agent runtime.
+
+    Configuration values may contain opaque, run-scoped handles. They must not
+    contain raw user, verifier, or cleanup credentials.
+    """
+
+    transport: str
+    version: str
+    configuration: dict[str, Any] = field(default_factory=dict)
+    tool_manifest: tuple[dict[str, Any], ...] = ()
+
+    def __post_init__(self) -> None:
+        if not self.transport.strip():
+            raise ValueError("capability bundle transport must not be empty")
+        if not self.version.strip():
+            raise ValueError("capability bundle version must not be empty")
 
 
 class CapabilityProviderAdapter(ABC):
@@ -53,12 +65,8 @@ class CapabilityProviderAdapter(ABC):
         return None
 
     @abstractmethod
-    async def setup(self, context: AdapterContext) -> None:
-        """Create provider-side session state and connect fixture accounts."""
-
-    @abstractmethod
-    async def run(self, context: AdapterContext) -> AdapterRunResult:
-        """Execute the task without observing or constructing verifier evidence."""
+    async def setup(self, context: AdapterContext) -> CapabilityBundle:
+        """Connect fixture accounts and expose capabilities to the fixed runner."""
 
     @abstractmethod
     async def teardown(self, context: AdapterContext) -> None:

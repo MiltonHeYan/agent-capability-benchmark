@@ -1,19 +1,22 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from copy import deepcopy
+from dataclasses import asdict, dataclass
 from typing import Any
 from uuid import uuid4
 
-from agent_capability_benchmark.adapters.base import (
-    AdapterRunResult,
-    CapabilityProviderAdapter,
-)
+from agent_capability_benchmark.adapters.base import CapabilityBundle, CapabilityProviderAdapter
 from agent_capability_benchmark.evidence import validate_evidence
+from agent_capability_benchmark.runners.base import AgentRunContext, AgentRunner, AgentRunResult
 from agent_capability_benchmark.sandbox import CleanupReport, SandboxBackend, SandboxLease
 from agent_capability_benchmark.verifier import VerificationResult, verify_task_evidence
 
 
 class NotEligibleError(ValueError):
+    pass
+
+
+class RunnerCompatibilityError(ValueError):
     pass
 
 
@@ -23,12 +26,13 @@ class IsolatedRunResult:
     run_id: str
     evidence: dict[str, Any]
     verification: VerificationResult
-    adapter_result: AdapterRunResult
+    agent_result: AgentRunResult
+    adapter_errors: tuple[str, ...]
     cleanup: CleanupReport
 
 
 class IsolatedRunHarness:
-    """Execute one provider attempt without exposing verifier credentials."""
+    """Run a fixed agent against one provider without exposing verifier state."""
 
     def __init__(self, sandbox: SandboxBackend) -> None:
         self.sandbox = sandbox
@@ -37,6 +41,7 @@ class IsolatedRunHarness:
         self,
         task: dict[str, Any],
         adapter: CapabilityProviderAdapter,
+        runner: AgentRunner,
         *,
         run_id: str | None = None,
     ) -> IsolatedRunResult:
@@ -57,41 +62,48 @@ class IsolatedRunHarness:
                 raise ValueError("sandbox lease run_id does not match requested run_id")
             lease.validate()
             baseline = await self.sandbox.capture_baseline(lease, task)
-            context = lease.adapter_context(task)
+            adapter_context = lease.adapter_context(_adapter_task_view(task))
+            agent_context = AgentRunContext(
+                task=_agent_task_view(task),
+                run_id=lease.run_id,
+                workspace=lease.workspace,
+                namespace=lease.namespace,
+                allowed_egress=lease.allowed_egress,
+            )
 
-            adapter_result = AdapterRunResult()
             adapter_errors: list[str] = []
+            bundle: CapabilityBundle | None = None
+            agent_result = AgentRunResult(
+                completed_normally=False,
+                error="agent did not start because provider setup failed",
+            )
             try:
                 async with adapter:
                     try:
-                        await adapter.setup(context)
+                        candidate_bundle = await adapter.setup(adapter_context)
+                        if not isinstance(candidate_bundle, CapabilityBundle):
+                            raise TypeError("adapter setup must return CapabilityBundle")
+                        bundle = candidate_bundle
                     except Exception as error:
-                        adapter_errors.append(_format_adapter_error("setup", error))
+                        adapter_errors.append(_format_error("adapter setup", error))
                     else:
-                        try:
-                            adapter_result = await adapter.run(context)
-                        except Exception as error:  # the external write may still have succeeded
-                            adapter_errors.append(_format_adapter_error("run", error))
+                        if not runner.supports(bundle):
+                            raise RunnerCompatibilityError(
+                                f"runner {runner.fingerprint.runner!r} does not support "
+                                f"transport {bundle.transport!r}"
+                            )
+                        agent_result = await _execute_agent(runner, agent_context, bundle)
                     finally:
                         try:
-                            await adapter.teardown(context)
+                            await adapter.teardown(adapter_context)
                         except Exception as error:
-                            adapter_errors.append(_format_adapter_error("teardown", error))
+                            adapter_errors.append(_format_error("adapter teardown", error))
+            except RunnerCompatibilityError:
+                raise
             except Exception as error:
-                adapter_errors.append(_format_adapter_error("lifecycle", error))
+                adapter_errors.append(_format_error("adapter lifecycle", error))
             finally:
                 final = await self.sandbox.capture_final_state(lease, task)
-
-            if adapter_errors:
-                reported_errors = [
-                    error for error in (adapter_result.error, *adapter_errors) if error
-                ]
-                adapter_result = AdapterRunResult(
-                    completed_normally=False,
-                    error="; ".join(reported_errors),
-                    events=adapter_result.events,
-                    metadata=adapter_result.metadata,
-                )
 
             evidence = {
                 "task_id": task["id"],
@@ -101,12 +113,17 @@ class IsolatedRunHarness:
                 "references": baseline.references,
                 "events": [
                     *final.events,
-                    *({"source": "adapter", "payload": event} for event in adapter_result.events),
+                    *({"source": "agent", "payload": event} for event in agent_result.events),
                 ],
                 "metadata": {
-                    **adapter_result.metadata,
+                    **agent_result.metadata,
                     "adapter": adapter.name,
-                    "adapter_completed_normally": adapter_result.completed_normally,
+                    "adapter_errors": adapter_errors,
+                    "agent_completed_normally": agent_result.completed_normally,
+                    "capability_transport": bundle.transport if bundle else None,
+                    "capability_bundle_version": bundle.version if bundle else None,
+                    "runner_fingerprint": asdict(runner.fingerprint),
+                    "runner_fingerprint_sha256": runner.fingerprint.digest,
                 },
             }
             evidence_errors = validate_evidence(evidence)
@@ -118,7 +135,8 @@ class IsolatedRunHarness:
                 run_id=actual_run_id,
                 evidence=evidence,
                 verification=verification,
-                adapter_result=adapter_result,
+                agent_result=agent_result,
+                adapter_errors=tuple(adapter_errors),
                 cleanup=cleanup_report,
             )
         finally:
@@ -132,10 +150,65 @@ class IsolatedRunHarness:
             run_id=result.run_id,
             evidence=result.evidence,
             verification=result.verification,
-            adapter_result=result.adapter_result,
+            agent_result=result.agent_result,
+            adapter_errors=result.adapter_errors,
             cleanup=cleanup_report,
         )
 
 
-def _format_adapter_error(phase: str, error: Exception) -> str:
+async def _execute_agent(
+    runner: AgentRunner,
+    context: AgentRunContext,
+    bundle: CapabilityBundle,
+) -> AgentRunResult:
+    agent_result = AgentRunResult(completed_normally=False, error="agent did not run")
+    errors: list[str] = []
+    try:
+        async with runner:
+            try:
+                await runner.setup(context, bundle)
+            except Exception as error:
+                errors.append(_format_error("runner setup", error))
+            else:
+                try:
+                    agent_result = await runner.run(context)
+                except Exception as error:
+                    errors.append(_format_error("runner run", error))
+            finally:
+                try:
+                    await runner.teardown(context)
+                except Exception as error:
+                    errors.append(_format_error("runner teardown", error))
+    except Exception as error:
+        errors.append(_format_error("runner lifecycle", error))
+
+    if not errors:
+        return agent_result
+    reported = [error for error in (agent_result.error, *errors) if error]
+    return AgentRunResult(
+        completed_normally=False,
+        error="; ".join(reported),
+        messages=agent_result.messages,
+        events=agent_result.events,
+        metrics=agent_result.metrics,
+        metadata=agent_result.metadata,
+    )
+
+
+def _agent_task_view(task: dict[str, Any]) -> dict[str, Any]:
+    visible = ("id", "version", "title", "track", "request", "policy", "limits", "tags")
+    return {key: deepcopy(task[key]) for key in visible if key in task}
+
+
+def _adapter_task_view(task: dict[str, Any]) -> dict[str, Any]:
+    fixture = task.get("fixture", {})
+    return {
+        "capabilities_required": list(task.get("capabilities_required", [])),
+        "fixture": {"kind": fixture["kind"]} if "kind" in fixture else {},
+        "policy": dict(task.get("policy", {})),
+        "limits": dict(task.get("limits", {})),
+    }
+
+
+def _format_error(phase: str, error: Exception) -> str:
     return f"{phase} {type(error).__name__}: {error}"

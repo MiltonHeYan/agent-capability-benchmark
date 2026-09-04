@@ -52,6 +52,14 @@ Every comparable run pins:
 - Retry, tool-call, time, and spending limits
 - Verifier version
 
+### Experimental blocks
+
+An official provider comparison is one block with a single pinned runner fingerprint. Every eligible provider is evaluated against that same runner, model, prompt, transport policy, task set, and run schedule. A provider cannot select a preferred agent engine.
+
+When multiple reference agents are used, each agent defines a separate complete block. Results are published as a provider-by-runner matrix. Cross-runner aggregates require a pre-registered runner set, weights, and missing-result policy; the unaggregated matrix remains authoritative.
+
+An open-combination track may vary the agent, model, and provider together, but its unit under test is the complete combination and its scores are not included in the provider-only main track.
+
 ## Verdicts
 
 Each run receives exactly one primary verdict:

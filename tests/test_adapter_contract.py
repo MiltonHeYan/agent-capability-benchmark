@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from agent_capability_benchmark.adapters.base import CapabilityProviderAdapter
+from agent_capability_benchmark.adapters.base import CapabilityBundle, CapabilityProviderAdapter
 
 
 class ExampleAdapter(CapabilityProviderAdapter):
@@ -8,10 +8,7 @@ class ExampleAdapter(CapabilityProviderAdapter):
     capabilities = frozenset({"record-read", "connected-account-read"})
 
     async def setup(self, context):
-        return None
-
-    async def run(self, context):
-        raise NotImplementedError
+        return CapabilityBundle(transport="mcp", version="1")
 
     async def teardown(self, context):
         return None
