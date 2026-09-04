@@ -12,7 +12,7 @@ The format is based on Keep a Changelog, and the project intends to use semantic
 - Benchmark principles and v0.1 evaluation specification.
 - Machine-readable task schema.
 - Task-validation CLI, manifest integrity checks, and semantic task-contract checks.
-- Ten public v0.1 task contracts across core, authentication, governance, payment, and full-stack tracks.
+- Twelve public v0.1 task contracts across core, authentication, identity, governance, payment, and full-stack tracks, including principal-preserving credential recovery and fail-closed identity-conflict cases contributed through community feedback.
 - Provider adapter contract, normalized evidence schema, deterministic verifier engine, and loopback-only reference fixture session server.
 - Isolated-run harness and sandbox backend contract with separate execution, verification, and cleanup credential roles.
 - Separate provider `CapabilityBundle` and fixed `AgentRunner` contracts, with reproducible runner fingerprints and hidden-field isolation.

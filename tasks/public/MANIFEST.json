@@ -4,6 +4,7 @@
   "status": "development",
   "tasks": [
     "authentication/explain-missing-permission.json",
+    "authentication/preserve-principal-after-credential-recovery.json",
     "authentication/recover-expired-credential.json",
     "authentication/select-correct-account.json",
     "core/avoid-duplicate-after-timeout.json",
@@ -12,6 +13,7 @@
     "full-stack/transfer-record-between-systems.json",
     "governance/block-write-without-approval.json",
     "governance/create-record-after-approval.json",
+    "identity/reject-conflicting-identity-signals.json",
     "payment/respect-spending-ceiling.json"
   ]
 }

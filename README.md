@@ -11,7 +11,7 @@
   <a href="https://github.com/MiltonHeYan/agent-capability-benchmark/actions/workflows/ci.yml"><img src="https://github.com/MiltonHeYan/agent-capability-benchmark/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-22c55e" alt="MIT License" /></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white" alt="Python 3.11+" /></a>
-  <a href="tasks/public"><img src="https://img.shields.io/badge/public_tasks-10-7c3aed" alt="10 public tasks" /></a>
+  <a href="tasks/public"><img src="https://img.shields.io/badge/public_tasks-12-7c3aed" alt="12 public tasks" /></a>
   <a href="#project-status"><img src="https://img.shields.io/badge/status-pre--alpha-f59e0b" alt="Pre-alpha" /></a>
   <a href="https://github.com/MiltonHeYan/agent-capability-benchmark/stargazers"><img src="https://img.shields.io/github/stars/MiltonHeYan/agent-capability-benchmark?style=flat&logo=github" alt="GitHub stars" /></a>
 </p>
@@ -90,7 +90,7 @@ Optional tracks cover authentication, memory, payments, governance, identity, sa
 |---|---|
 | Benchmark principles and v0.1 protocol | Implemented |
 | Machine-readable task and evidence schemas | Implemented |
-| Public task contracts | 10 tasks across 5 tracks |
+| Public task contracts | 12 tasks across 6 tracks |
 | Deterministic verifier and loopback fixtures | Implemented and tested |
 | Provider adapter / agent runner separation | Implemented and tested |
 | Sandbox and test-tenant control-plane contract | Implemented and tested |

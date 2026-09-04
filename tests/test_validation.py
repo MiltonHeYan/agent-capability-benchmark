@@ -18,7 +18,7 @@ def test_public_tasks_are_valid() -> None:
     task_files = discover_task_files([PUBLIC_TASKS])
 
     assert task_files
-    assert len(task_files) == 10
+    assert len(task_files) == 12
     assert all(validate_task_file(task_file) == [] for task_file in task_files)
     assert validate_task_suite(PUBLIC_TASKS) == []
 
