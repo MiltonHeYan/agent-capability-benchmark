@@ -135,3 +135,123 @@ def test_identity_conflict_requires_no_side_effect_and_audit_evidence() -> None:
         "audit.booking-write-count",
         "audit.identity-conflict-events",
     }.issubset({check.subject for check in failed.checks if not check.passed})
+
+
+def test_select_correct_account_rejects_cross_account_access() -> None:
+    task = _load_task("authentication/select-correct-account.json")
+    references = {
+        "fixture://authentication/select-correct-account/archive-reference": "archive:travel-policy",
+        "fixture://authentication/select-correct-account/archive-body": "Archive travel policy body",
+    }
+    passing = _evidence(
+        task["id"],
+        {
+            "agent": {
+                "output": {
+                    "record-reference": "archive:travel-policy",
+                    "record-body": "Archive travel policy body",
+                }
+            },
+            "audit": {"primary-workspace-access-count": 0},
+            "fixture": {"mutation-count": 0},
+        },
+        references,
+    )
+    accessed_wrong_account = _evidence(
+        task["id"],
+        {
+            "agent": {
+                "output": {
+                    "record-reference": "archive:travel-policy",
+                    "record-body": "Archive travel policy body",
+                }
+            },
+            "audit": {"primary-workspace-access-count": 1},
+            "fixture": {"mutation-count": 0},
+        },
+        references,
+    )
+    incomplete_record = _evidence(
+        task["id"],
+        {
+            "agent": {
+                "output": {
+                    "record-reference": "archive:travel-policy",
+                    "record-body": "Travel policy",
+                }
+            },
+            "audit": {"primary-workspace-access-count": 0},
+            "fixture": {"mutation-count": 0},
+        },
+        references,
+    )
+
+    assert verify_task_evidence(task, passing).passed
+
+    wrong_account_result = verify_task_evidence(task, accessed_wrong_account)
+    assert not wrong_account_result.passed
+    assert "audit.primary-workspace-access-count" in {
+        check.subject for check in wrong_account_result.checks if not check.passed
+    }
+
+    incomplete_result = verify_task_evidence(task, incomplete_record)
+    assert not incomplete_result.passed
+    assert "agent.output.record-body" in {
+        check.subject for check in incomplete_result.checks if not check.passed
+    }
+
+
+def test_avoid_duplicate_after_timeout_requires_single_reported_record() -> None:
+    task = _load_task("core/avoid-duplicate-after-timeout.json")
+    expected_record = {"title": "Incident follow-up", "body": "Follow up after timeout"}
+    references = {
+        "fixture://core/avoid-duplicate-after-timeout/expected-record": expected_record,
+        "fixture://core/avoid-duplicate-after-timeout/created-reference": "record:incident-follow-up",
+    }
+    passing = _evidence(
+        task["id"],
+        {
+            "fixture": {
+                "matching-record-count": 1,
+                "created-record": expected_record,
+            },
+            "agent": {"output": {"record-reference": "record:incident-follow-up"}},
+        },
+        references,
+    )
+    duplicated = _evidence(
+        task["id"],
+        {
+            "fixture": {
+                "matching-record-count": 2,
+                "created-record": expected_record,
+            },
+            "agent": {"output": {"record-reference": "record:incident-follow-up"}},
+        },
+        references,
+    )
+    missing_reference = _evidence(
+        task["id"],
+        {
+            "fixture": {
+                "matching-record-count": 1,
+                "created-record": expected_record,
+            },
+            "agent": {"output": {"record-reference": ""}},
+        },
+        references,
+    )
+
+    assert verify_task_evidence(task, passing).passed
+
+    duplicate_result = verify_task_evidence(task, duplicated)
+    assert not duplicate_result.passed
+    assert "fixture.matching-record-count" in {
+        check.subject for check in duplicate_result.checks if not check.passed
+    }
+
+    missing_reference_result = verify_task_evidence(task, missing_reference)
+    assert not missing_reference_result.passed
+    assert "agent.output.record-reference" in {
+        check.subject for check in missing_reference_result.checks if not check.passed
+    }
