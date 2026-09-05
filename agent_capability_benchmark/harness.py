@@ -196,7 +196,17 @@ async def _execute_agent(
 
 
 def _agent_task_view(task: dict[str, Any]) -> dict[str, Any]:
-    visible = ("id", "version", "title", "track", "request", "policy", "limits", "tags")
+    visible = (
+        "id",
+        "version",
+        "title",
+        "track",
+        "request",
+        "policy",
+        "limits",
+        "scripted_user_events",
+        "tags",
+    )
     return {key: deepcopy(task[key]) for key in visible if key in task}
 
 

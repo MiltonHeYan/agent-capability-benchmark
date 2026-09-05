@@ -24,6 +24,11 @@ The adapter receives only opaque execution connection handles. The sandbox backe
 
 Every runner declares a `RunnerFingerprint` containing the runner, engine, model, system-prompt digest, and inference configuration. Provider results with different fingerprints are not directly pooled.
 
+The reference `JsonlSubprocessRunner` starts a fresh external process for each run and communicates
+over a versioned JSONL protocol. Its fingerprint also captures a digest of the executable argument
+vector, protocol version, declared transports, and environment-variable names. See the
+[JSONL subprocess runner protocol](jsonl-subprocess-runner.md).
+
 ### Normalized evidence
 
 A run evidence document is constructed by the trusted harness, not returned by the adapter. It contains:

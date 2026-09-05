@@ -8,6 +8,7 @@ Use this map to find the right level of detail without reading the repository fr
 | [Benchmark principles](principles.md) | Non-negotiable neutrality, reproducibility, and evidence rules |
 | [Public task catalog](task-catalog-v0.1.md) | Initial task families and their intended coverage |
 | [Agent runner protocol](agent-runner-protocol.md) | Fixed-agent control variables and engine integration |
+| [JSONL subprocess runner](jsonl-subprocess-runner.md) | CLI engine wire protocol, lifecycle, and security boundaries |
 | [Sandbox and test-tenancy](sandbox-and-tenancy.md) | Credentials, external accounts, cleanup, and trust boundaries |
 | [Reference runtime](reference-runtime.md) | Executable contracts, evidence format, fixture server, and verifier |
 

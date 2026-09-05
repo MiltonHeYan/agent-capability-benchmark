@@ -92,7 +92,7 @@ Optional tracks cover authentication, memory, payments, governance, identity, sa
 | Machine-readable task and evidence schemas | Implemented |
 | Public task contracts | 12 tasks across 6 tracks |
 | Deterministic verifier and loopback fixtures | Implemented and tested |
-| Provider adapter / agent runner separation | Implemented and tested |
+| Provider adapter / agent runner separation | Implemented and tested, including JSONL subprocess driver |
 | Sandbox and test-tenant control-plane contract | Implemented and tested |
 | Production service backends | Planned |
 | Repeated-run statistics and official results | Planned |

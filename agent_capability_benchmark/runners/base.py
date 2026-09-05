@@ -22,6 +22,7 @@ class RunnerFingerprint:
     model: str
     system_prompt_sha256: str
     inference_config: dict[str, Any] = field(default_factory=dict)
+    driver_config_sha256: str | None = None
 
     def __post_init__(self) -> None:
         required = (
@@ -35,6 +36,8 @@ class RunnerFingerprint:
             raise ValueError("runner fingerprint fields must not be empty")
         _validate_sha256("runtime_image_sha256", self.runtime_image_sha256)
         _validate_sha256("system_prompt_sha256", self.system_prompt_sha256)
+        if self.driver_config_sha256 is not None:
+            _validate_sha256("driver_config_sha256", self.driver_config_sha256)
 
     @classmethod
     def from_system_prompt(
@@ -48,6 +51,7 @@ class RunnerFingerprint:
         model: str,
         system_prompt: str,
         inference_config: dict[str, Any] | None = None,
+        driver_config_sha256: str | None = None,
     ) -> RunnerFingerprint:
         return cls(
             runner=runner,
@@ -58,6 +62,7 @@ class RunnerFingerprint:
             model=model,
             system_prompt_sha256=hashlib.sha256(system_prompt.encode()).hexdigest(),
             inference_config=inference_config or {},
+            driver_config_sha256=driver_config_sha256,
         )
 
     @property

@@ -16,3 +16,9 @@ A conforming runner must:
 - Separate runner failures from provider task failures
 
 The executable contract lives in `agent_capability_benchmark/runners/base.py`. See `docs/agent-runner-protocol.md` for lifecycle, control variables, and comparison tracks.
+
+`JsonlSubprocessRunner` is the reference driver for CLI-based engines. It launches one process per
+run, communicates over structured stdin/stdout, supports scripted approval and clarification
+events, normalizes operational failures, and reliably reaps the child. See the
+[JSONL subprocess protocol](../docs/jsonl-subprocess-runner.md) for the wire format and security
+boundaries.

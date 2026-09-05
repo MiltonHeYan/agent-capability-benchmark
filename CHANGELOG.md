@@ -17,6 +17,8 @@ The format is based on Keep a Changelog, and the project intends to use semantic
 - Isolated-run harness and sandbox backend contract with separate execution, verification, and cleanup credential roles.
 - Separate provider `CapabilityBundle` and fixed `AgentRunner` contracts, with reproducible runner fingerprints and hidden-field isolation.
 - Agent runner protocol for controlled provider comparisons, cross-engine blocks, and engine conformance.
+- JSONL subprocess runner with scripted user events, stable driver identity, structured failures,
+  secret redaction, timeout enforcement, and deterministic offline conformance fixtures.
 - Project landing page, documentation map, governance, conduct, citation, and integration-proposal scaffolding.
 - Current GitHub Actions runtimes without Node.js 20 deprecation warnings.
 - Test-tenant threat model covering disposable runner state, egress allowlists, run namespaces, external-state verification, cleanup, and quarantine.
